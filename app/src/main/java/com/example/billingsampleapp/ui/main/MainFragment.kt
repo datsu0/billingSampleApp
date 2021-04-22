@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.example.billingsampleapp.R
+import com.example.billingsampleapp.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
 
@@ -14,25 +17,31 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    //private lateinit var viewModel: MainViewModel
     private lateinit var billingViewModel: BillingViewModel
+    private lateinit var binding: MainFragmentBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false)
+        billingViewModel = BillingViewModel(requireActivity())
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+        binding.button.setOnClickListener {
+            onClick(it)
+        }
     }
 
-    override fun onClick(v: View?){
+    fun onClick(v: View?){
         billingViewModel.purchase(
             requireActivity(),
             BillingItem.NonConsumableItem
         )
+        Toast.makeText(requireContext(),"Tapped",Toast.LENGTH_LONG).show()
     }
 
 }

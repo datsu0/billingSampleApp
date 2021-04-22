@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode.OK
 
-abstract class BillingViewModel(application: Application) : ViewModel(),
+class BillingViewModel(activity: Activity) : ViewModel(),
     BillingClientStateListener, PurchasesUpdatedListener, LifecycleObserver {
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener {
@@ -14,7 +14,7 @@ abstract class BillingViewModel(application: Application) : ViewModel(),
     }
 
     private val billingClient: BillingClient =
-        BillingClient.newBuilder(application)
+        BillingClient.newBuilder(activity)
             .enablePendingPurchases()
             .setListener(purchasesUpdatedListener)
             .build()
@@ -29,6 +29,18 @@ abstract class BillingViewModel(application: Application) : ViewModel(),
         billingResult: BillingResult,
         purchases: MutableList<Purchase>?
     ) {
+        if(billingResult.responseCode == OK && purchases != null) {
+            for (purchase in purchases) {
+                handlePurchase(purchase)
+            }
+        }else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED){
+
+        }else {
+
+        }
+    }
+
+    fun handlePurchase(purchases: Purchase){
 
     }
 
